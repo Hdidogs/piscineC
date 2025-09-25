@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct {
     unsigned int x;
@@ -203,11 +204,98 @@ int canAttack(Map *map, int x, int y) {
         return 0;
     }else if (map->map[x][y] == -1) {
         return 0;
+    }else {
+        return 0;
     }
 }
 void setCoord(int l, char c, int *x, int *y) {
     *x=l-1;
     *y=c-65;
+}
+int canAttackCross(Map *map, int x, int y) {
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+
+
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+
+
+    }else if (map->map[x][y] == -2) {
+
+        return 0;
+    }else if (map->map[x][y] == -1) {
+
+        return 0;
+    }else {
+        return 0;
+    }
+
+    int dx[] = { 1, -1,  1, -1};
+    int dy[] = {-1,  1,  1, -1};
+
+    for (int i = 0; i < 8; i++) {
+        canAttack(map, x + dx[i], y + dy[i]);
+    }
+    return 1;
+
+}
+
+int canAttackNuke(Map *map, int x, int y) {
+
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+    }else if (map->map[x][y] == -2) {
+
+        return 0;
+    }else if (map->map[x][y] == -1) {
+
+        return 0;
+    }else {
+        return 0;
+    }
+    int dx[] = { 1, -1,  1, -1,  0,  0,  1, -1 };
+    int dy[] = {-1,  1,  1, -1, -1,  1,  0,  0 };
+
+    for (int i = 0; i < 8; i++) {
+        canAttack(map, x + dx[i], y + dy[i]);
+    }
+    return 1;
+}
+int canAttackRandom(Map *map, int x, int y) {
+    int l;
+    int c;
+
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+        for (int i = 0; i<4;i++) {
+            c= rand()%map->size;
+            l = rand()%map->size;
+            canAttack(map,l,c);
+
+        }
+
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+        for (int i = 0; i<4;i++) {
+            c= rand()%map->size;
+
+            l = rand()%map->size;
+            canAttack(map,l,c);
+        }
+    }else if (map->map[x][y] == -2) {
+
+        return 0;
+    }else if (map->map[x][y] == -1) {
+
+        return 0;
+    }else {
+        return 0;
+    }
+
+    return 1;
 }
 
 int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
@@ -257,7 +345,7 @@ int main(void) {
     scanf(" %c",&c);
 
     setCoord(l,c,x,y);
-    canAttack(map,*x,*y);
+    canAttackCross(map,*x,*y);
     printMap(map);
 
     return 0;

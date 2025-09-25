@@ -49,6 +49,8 @@ int placeRandomBoat(char **maps,int mapsize) {
 
 }
 
+
+
 int main() {
     srand(time(NULL));
     generateRandomXY();

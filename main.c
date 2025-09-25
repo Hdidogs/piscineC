@@ -194,6 +194,92 @@ int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
     return 0;
 }
 
+int canAttackRandom(Map *map, int x, int y) {
+    int l;
+    int c;
+
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+        for (int i = 0; i<4;i++) {
+            c= rand()%map->size;
+            l = rand()%map->size;
+            canAttack(map,l,c);
+
+        }
+
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+        for (int i = 0; i<4;i++) {
+            c= rand()%map->size;
+
+            l = rand()%map->size;
+            canAttack(map,l,c);
+        }
+    }else if (map->map[x][y] == -2) {
+
+        return 0;
+    }else if (map->map[x][y] == -1) {
+
+        return 0;
+    }else {
+        return 0;
+    }
+
+    return 1;
+}
+
+int canAttackNuke(Map *map, int x, int y) {
+
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+    }else if (map->map[x][y] == -2) {
+
+        return 0;
+    }else if (map->map[x][y] == -1) {
+
+        return 0;
+    }else {
+        return 0;
+    }
+    int dx[] = { 1, -1,  1, -1,  0,  0,  1, -1 };
+    int dy[] = {-1,  1,  1, -1, -1,  1,  0,  0 };
+
+    for (int i = 0; i < 8; i++) {
+        canAttack(map, x + dx[i], y + dy[i]);
+    }
+    return 1;
+}
+
+
+int canAttackCross(Map *map, int x, int y) {
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+
+
+    }else if (map->map[x][y] == -2) {
+
+        return 0;
+    }else if (map->map[x][y] == -1) {
+
+        return 0;
+    }else {
+        return 0;
+    }
+
+    int dx[] = { 1, -1,  1, -1};
+    int dy[] = {-1,  1,  1, -1};
+
+    for (int i = 0; i < 8; i++) {
+        canAttack(map, x + dx[i], y + dy[i]);
+    }
+    return 1;
+
+}
 
 int main(void) {
 
