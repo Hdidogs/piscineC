@@ -77,7 +77,7 @@ int getMapValue(unsigned int x, unsigned int y, Map *map) {
 
 int setMapValue(unsigned int x, unsigned int y, Map *map, int val) {
     if (x >= map->size || y >= map->size) return 0;
-    map->map[y-1][x-1] = val;
+    map->map[x][y] = val;
 
     return 1;
 }
@@ -177,7 +177,26 @@ int canAttack(Map *map, int x, int y) {
     }
 }
 
+void setCoord(int l, char c, int *x, int *y) {
+    *x=l-1;
+    *y=c-65;
+}
+
+int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
+
+    if (canPlaceBoat(map,x,y,ship->orientation,ship->size)) {
+        ship->orientation = orientation;
+        ship->x = x;
+        ship->y = y;
+        addShip(map,ship);
+        return 1;
+    }
+    return 0;
+}
+
+
 int main(void) {
-    printf("Hello, World!\n");
+
+
     return 0;
 }
