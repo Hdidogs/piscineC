@@ -59,14 +59,43 @@ int addShip(Map *map, Ship *ship) {
         map->ship = temp;
         map->shipAllocation++;
     }
+    int taille = ship->size;
+    if (ship->orientation=='n') {
 
-    for (int k = 0; k < ship->size; k++) {
-        int x = ship->x + ship->orientation == 'n' ? -k : ship->orientation == 's' ? k : 0;
-        int y = ship->y + ship->orientation == 'e' ? -k : ship->orientation == 'o' ? k : 0;
-        if (map->map[x][y] == 0) {
-            map->map[x][y] = 1;
+        for (int i=ship->x;taille!=0;i++) {
+
+            if (map->map[i][ship->y] == 0) {
+                map->map[i][ship->y] = 1;
+                taille--;
+            }
         }
+    }else if (ship->orientation=='s') {
+        for (int i=ship->x;taille!=0;i--) {
+            if (map->map[i][ship->y] == 0) {
+                map->map[i][ship->y] = 1;
+                taille--;
+            }
+        }
+
+    }else if (ship->orientation=='o') {
+        for (int i=ship->y;taille!=0 ;i++) {
+            if (map->map[ship->x][i] == 0) {
+                map->map[ship->x][i] = 1;
+                taille--;
+            }
+        }
+
+    }else if (ship->orientation=='e') {
+        for (int i=ship->y;taille!=0;i--) {
+            if (map->map[ship->x][i] == 0) {
+                map->map[ship->x][i] = 1;
+                taille--;
+            }
+        }
+    }else {
+        return 0;
     }
+
 }
 
 int getMapValue(unsigned int x, unsigned int y, Map *map) {
@@ -77,7 +106,7 @@ int getMapValue(unsigned int x, unsigned int y, Map *map) {
 
 int setMapValue(unsigned int x, unsigned int y, Map *map, int val) {
     if (x >= map->size || y >= map->size) return 0;
-    map->map[y-1][x-1] = val;
+    map->map[x][y] = val;
 
     return 1;
 }
@@ -176,15 +205,60 @@ int canAttack(Map *map, int x, int y) {
         return 0;
     }
 }
+void setCoord(int l, char c, int *x, int *y) {
+    *x=l-1;
+    *y=c-65;
+}
+
+int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
+
+    if (canPlaceBoat(map,x,y,ship->orientation,ship->size)) {
+        ship->orientation = orientation;
+        ship->x = x;
+        ship->y = y;
+        addShip(map,ship);
+        return 1;
+    }
+    return 0;
+}
 
 int main(void) {
 
-    char mapeSize = 10;
+    Map *map =createMap(10);
 
-    Map *map =createMap(mapeSize);
+    Ship *ship= malloc(sizeof(Ship));
+    ship->orientation = 's';
+    ship->size = 3;
 
-    int b;
-    b = canPlaceBoat(map, 2, 2, 'o', 2);
-    printf("%d\n",b);
+
+    int l;
+    printf("x :");
+    scanf("%d",&l);
+    char c;
+    printf("y :");
+    scanf(" %c",&c);
+    char orientation;
+    printf("Orientation :");
+    scanf(" %c",&orientation);
+    int *x=malloc(sizeof(int));
+    int *y=malloc(sizeof(int));
+    setCoord(l,c,x,y);
+
+    if (tryPlaceBoat(map,*x,*y,orientation,ship)) {
+        printMap(map);
+    }
+
+
+    printf("Attaque \n");
+    printf("x :");
+    scanf("%d",&l);
+
+    printf("y :");
+    scanf(" %c",&c);
+
+    setCoord(l,c,x,y);
+    canAttack(map,*x,*y);
+    printMap(map);
+
     return 0;
 }

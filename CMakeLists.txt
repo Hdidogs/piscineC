@@ -4,10 +4,7 @@ project(shipbattle C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(shipbattle main.c
-        mainTestAli.c)
-add_executable(shipbattle main.c
 
         mainTest.c
         mainTest.c
 )
-
