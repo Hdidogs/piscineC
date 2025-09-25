@@ -17,6 +17,127 @@ typedef struct {
     unsigned int shipAllocation;
 } Map;
 
+typedef struct {
+    int grid_width;
+    int grid_height;
+    int ship_sizes[5];
+} GameConfig;
+
+
+int contain(char *chaine1, char *chaine2) {
+
+    for(int i = 0; i < strlen(chaine2); i++) {
+        if (chaine1[i]  != chaine2[i]) {
+            return 0;
+
+        }
+    }
+    return 1;
+}
+
+GameConfig *load_config(const char *filename, GameConfig *config) {
+    // TODO: Ouvrir le fichier
+    FILE *f = fopen(filename,"r");
+
+    int gw = 0;
+    int gh = 0;
+    int index = 0;
+    int *size = malloc(sizeof(int) * 5);
+
+     if (f == NULL) {
+        printf("File not found\n");
+         FILE * f1 = fopen(filename,"w");
+         fputs("# Configuration BattleChip\n",f);
+         fputs("GRIDWIDTH = 10\n",f1);
+         fputs("GRIDHEIGHT = 10\n",f1);
+         fputs("SHIPCARRIER = 5\n",f1);
+         fputs("SHIPBATTLESHIP = 4\n",f1);
+         fputs("SHIPDESTROYER = 3\n",f1);
+         fputs("SHIPDESTROYER = 3\n",f1);
+         fputs("SHIPSUBMARINE = 2\n",f1);
+         fclose(f1);
+         load_config(f1,config);
+    }else {
+
+        char content[1000] = {0};
+        int nb_lines = 0;
+        char *commentaire ="#";
+        char *gridWidth = "GRIDWIDTH";
+        char *gridHeight = "GRIDHEIGHT";
+        char *shipsizes = "SHIPBATTLESHIP";
+        char *shipsizes1 = "SHIPDESTROYER";
+        char *shipsizes2 = "SHIPSUBMARINE";
+        char *shipsizes3 = "SHIPCARRIER";
+
+
+        printf("File opened\n");
+        //on parcour ligne par ligne le fichier
+        // TODO: Parser ligne par ligne (ignorer # commentaires)
+        // TODO: Extraire key=value
+        while(fgets(content, sizeof(content), f)) {
+            //si la ligne contien # on ne la lis pas
+            if (contain(content, commentaire)==1) {
+                continue;
+            }//sinon on lis la ligne
+            else {
+                if (contain(content, gridWidth)) {
+                    //printf("Grid width\n");
+                    sscanf(content,"GRIDWIDTH = %d", &gw);
+                    nb_lines++;
+                }
+                else if (contain(content, gridHeight)) {
+                    //printf("grid height\n");
+                    sscanf(content,"GRIDHEIGHT = %d", &gh);
+                    nb_lines++;
+                }
+                else if (contain(content, shipsizes) ||
+         contain(content, shipsizes1) ||
+         contain(content, shipsizes2) ||
+         contain(content, shipsizes3)) {
+
+                    //printf("Ship sizes\n");
+
+                    if (contain(content, shipsizes)) {
+                        sscanf(content, "SHIPBATTLESHIP = %d", &size[index]);
+                    }
+                    else if (contain(content, shipsizes1)) {
+                        sscanf(content, "SHIPDESTROYER = %d", &size[index]);
+                    }
+                    else if (contain(content, shipsizes2)) {
+                        sscanf(content, "SHIPSUBMARINE = %d", &size[index]);
+                    }
+                    else if (contain(content, shipsizes3)) {
+                        sscanf(content, "SHIPCARRIER = %d", &size[index]);
+                    }
+
+                    index++;
+                    nb_lines++;
+         }
+
+                else {
+                    //printf("DEBUG: Ligne %d: '%s'\n", nb_lines, content);
+                    nb_lines++;
+                }
+
+            }
+
+
+        }
+        fclose(f);
+        printf(" File closed\n");
+    }
+
+    // TODO: Valider les valeurs
+    config->grid_width = gw;
+    config->grid_height = gh;
+    for(int i = 0; i < 5; i++) {
+        config->ship_sizes[i] = size[i];
+    }
+
+    return config;
+
+}
+
 Map *createMap(unsigned int size) {
     Map *map = (Map *)malloc(sizeof(Map));
     map->size = size;
@@ -197,6 +318,9 @@ int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
 
 int main(void) {
 
+    GameConfig *config;
+    char *filename= "config.txt";
 
+    load_config(filename,config);
     return 0;
 }
