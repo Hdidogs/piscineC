@@ -9,49 +9,153 @@ typedef struct {
     unsigned int y;
     unsigned short live;
     unsigned short size;
+    char orientation;
 } Ship;
 
+typedef struct {
+    Ship *ship;
+    int **map;
+    unsigned int size;
+    unsigned int shipAllocation;
+} Map;
+int addShip(Map *map, Ship *ship) {
+    if (map->shipAllocation == 0) {
+        Ship *newShip = (Ship *)malloc(sizeof(Ship));
+        newShip->x = ship->x;
+        newShip->y = ship->y;
+        newShip->orientation = ship->orientation;
+        newShip->size = ship->size;
 
-int generateRandomXY(){
-    int x = 10;
-    int y = 10;
-    int or = 4;
-    char orientation;
+        map->shipAllocation++;
+        map->ship = newShip;
+    } else {
+        Ship *temp = malloc(sizeof(Ship) * (map->shipAllocation +1));
+        for (int i = 0; i < map->shipAllocation; i++) {
+            temp[i] = map->ship[i];
+        }
 
+        temp[map->shipAllocation].x = ship->x;
+        temp[map->shipAllocation].y = ship->y;
+        temp[map->shipAllocation].orientation = ship->orientation;
+        temp[map->shipAllocation].size = ship->size;
 
-    int randomX = rand() % x;
-    int randomY = rand() % y;
-    int randomOrientation = rand() % or;
-    printf("Random X = %d\nRandom Y = %d\nRandomOrientation=%d\n", randomX, randomY, randomOrientation);
-
-    switch (randomOrientation) {
-     case 0:
-             orientation='n';
-            break;
-
-     case 1:
-             orientation='s';
-            break;
-
-     case 2:
-             orientation='e';
-            break;
-
-     case 3:
-             orientation='o';
-            break;
- }
-    printf("Random orientation =%c\n", orientation);
-return 0;
+        free(map->ship);
+        map->ship = temp;
+        map->shipAllocation++;
     }
 
-int placeRandomBoat(char **maps,int mapsize) {
+    for (int k = 0; k < ship->size; k++) {
+        int x = ship->x + ship->orientation == 'n' ? -k : ship->orientation == 's' ? k : 0;
+        int y = ship->y + ship->orientation == 'e' ? -k : ship->orientation == 'o' ? k : 0;
+        if (map->map[x][y] == 0) {
+            map->map[x][y] = 1;
+        }
+    }
+}
+int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
+    int taille = 0;
+    if (orientation=='n') {
+        for (int i=x;i<map->size || shipSize>0;i++) {
+
+            if (i<map->size && shipSize>0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+    }else if (orientation=='s') {
+        for (int i=x;i>0 || shipSize>0;i--) {
+            if (i>0&& shipSize>0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+    }else if (orientation=='o') {
+        for (int i=y;i<map->size || shipSize>0;i++) {
+            if (i<map->size&& shipSize>0 && map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+    }else if (orientation=='e') {
+        for (int i=y;i>0 || shipSize!=0;i--) {
+            if (i>0 && shipSize!=0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+    }else {
+        return 0;
+    }
+    return 1;
+}
+
+
+void generateRandomXY( int *x, int *y) {
+    int xTemp = 10;
+    int yTemp = 10;
+
+     *x = rand() % xTemp;
+     *y = rand() % yTemp;
 
 }
 
-int main() {
-    srand(time(NULL));
-    generateRandomXY();
+    int placeRandomBoat(Map *maps) {
+    int or = 4;
+    char orientation;
+    int randomOrientation = rand() % or;
+    switch (randomOrientation) {
+        case 0:
+            orientation='n';
+            break;
 
-}
+        case 1:
+            orientation='s';
+            break;
 
+        case 2:
+            orientation='e';
+            break;
+
+        case 3:
+            orientation='o';
+            break;
+    }
+        int *x = malloc(sizeof(int ));
+    int *y = malloc(sizeof(int ));
+    generateRandomXY(x,y);
+
+
+
+        return 1;
+
+    }
+    return 0;
+    }
+
+
+
+
+    int main() {
+        srand(time(NULL));
+        generateRandomXY();
+
+    }

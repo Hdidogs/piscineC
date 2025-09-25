@@ -8,5 +8,6 @@ add_executable(shipbattle main.c
 add_executable(shipbattle main.c
 
         mainTest.c
+        mainTest.c
 )
 
