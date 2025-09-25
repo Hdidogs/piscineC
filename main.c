@@ -8,6 +8,10 @@ typedef struct {
 } Ship;
 
 int main(void) {
-    printf("Hello, World!\n");
+    const short AIRCRAFTCARRIERSIZE = 5;
+    const short CRUISERSIZE = 4;
+    const short DESTROYERSIZE = 3;
+    const short TORPEDOSIZE = 2;
+
     return 0;
 }
