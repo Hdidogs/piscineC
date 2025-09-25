@@ -69,7 +69,7 @@ int addShip(Map *map, Ship *ship) {
     }
 }
 
-int getMapValue(unsigned int x, unsigned int y, Map *map) {
+int getMap2(unsigned int x, unsigned int y, Map *map) {
     if (x >= map->size || y >= map->size) return -1;
 
     return map->map[y+1][x+1];
