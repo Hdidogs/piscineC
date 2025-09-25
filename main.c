@@ -318,7 +318,7 @@ int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
 
 int main(void) {
 
-    GameConfig *config;
+    GameConfig *config = malloc(sizeof(GameConfig));
     char *filename= "config.txt";
 
     load_config(filename,config);
