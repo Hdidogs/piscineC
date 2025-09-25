@@ -69,7 +69,7 @@ int addShip(Map *map, Ship *ship) {
     }
 }
 
-int getMap2(unsigned int x, unsigned int y, Map *map) {
+int getMapValue(unsigned int x, unsigned int y, Map *map) {
     if (x >= map->size || y >= map->size) return -1;
 
     return map->map[y+1][x+1];
@@ -178,6 +178,13 @@ int canAttack(Map *map, int x, int y) {
 }
 
 int main(void) {
-    printf("Hello, World!\n");
+
+    char mapeSize = 10;
+
+    Map *map =createMap(mapeSize);
+
+    int b;
+    b = canPlaceBoat(map, 2, 2, 'o', 2);
+    printf("%d\n",b);
     return 0;
 }
