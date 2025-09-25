@@ -107,6 +107,76 @@ void printMap(Map *map) {
     }
 }
 
+int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
+    int taille = 0;
+    if (orientation=='n') {
+        for (int i=x;i<map->size || shipSize>0;i++) {
+
+            if (i<map->size && shipSize>0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+    }else if (orientation=='s') {
+        for (int i=x;i>0 || shipSize>0;i--) {
+            if (i>0&& shipSize>0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+    }else if (orientation=='o') {
+        for (int i=y;i<map->size || shipSize>0;i++) {
+            if (i<map->size&& shipSize>0 && map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+    }else if (orientation=='e') {
+        for (int i=y;i>0 || shipSize!=0;i--) {
+            if (i>0 && shipSize!=0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+    }else {
+        return 0;
+    }
+    return 1;
+}
+
+int canAttack(Map *map, int x, int y) {
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+        return 1;
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+        return 1;
+    }else if (map->map[x][y] == -2) {
+        return 0;
+    }else if (map->map[x][y] == -1) {
+        return 0;
+    }
+}
+
 int main(void) {
     printf("Hello, World!\n");
     return 0;

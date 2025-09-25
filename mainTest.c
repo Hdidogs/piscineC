@@ -107,12 +107,12 @@ void printMap(Map *map) {
     }
 }
 
-int canPlaceBoat(char **map, int mapSize, int x, int y, char orientation, short shipSize) {
+int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
     int taille = 0;
     if (orientation=='n') {
-        for (int i=x;i<mapSize || shipSize>0;i++) {
+        for (int i=x;i<map->size || shipSize>0;i++) {
 
-            if (i<mapSize && shipSize>0) {
+            if (i<map->size && shipSize>0&& map->map[x][i] == 0) {
                 shipSize--;
                 taille++;
             }else if (shipSize==0) {
@@ -123,7 +123,7 @@ int canPlaceBoat(char **map, int mapSize, int x, int y, char orientation, short 
         }
     }else if (orientation=='s') {
         for (int i=x;i>0 || shipSize>0;i--) {
-            if (i>0&& shipSize>0) {
+            if (i>0&& shipSize>0&& map->map[x][i] == 0) {
                 shipSize--;
                 taille++;
 
@@ -135,8 +135,8 @@ int canPlaceBoat(char **map, int mapSize, int x, int y, char orientation, short 
         }
 
     }else if (orientation=='o') {
-        for (int i=y;i<mapSize || shipSize>0;i++) {
-            if (i<mapSize&& shipSize>0 ) {
+        for (int i=y;i<map->size || shipSize>0;i++) {
+            if (i<map->size&& shipSize>0 && map->map[x][i] == 0) {
                 shipSize--;
                 taille++;
             }else if (shipSize==0) {
@@ -148,7 +148,7 @@ int canPlaceBoat(char **map, int mapSize, int x, int y, char orientation, short 
 
     }else if (orientation=='e') {
         for (int i=y;i>0 || shipSize!=0;i--) {
-            if (i>0 && shipSize!=0) {
+            if (i>0 && shipSize!=0&& map->map[x][i] == 0) {
                 shipSize--;
                 taille++;
             }else if (shipSize==0) {
@@ -163,13 +163,28 @@ int canPlaceBoat(char **map, int mapSize, int x, int y, char orientation, short 
     return 1;
 }
 
+int canAttack(Map *map, int x, int y) {
+    if (map->map[x][y] == 0) {
+        setMapValue(x,y,map,-1);
+        return 1;
+    }else if (map->map[x][y] == 1) {
+        setMapValue(x,y,map,-2);
+        return 1;
+    }else if (map->map[x][y] == -2) {
+        return 0;
+    }else if (map->map[x][y] == -1) {
+        return 0;
+    }
+}
+
 int main(void) {
 
     char mapeSize = 10;
 
-    char map[10][10]={0};
+    Map *map =createMap(mapeSize);
+
     int b;
-    b = canPlaceBoat(map, mapeSize, 2, 2, 'o', 2);
+    b = canPlaceBoat(map, 2, 2, 'o', 2);
     printf("%d\n",b);
     return 0;
 }
