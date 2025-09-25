@@ -107,69 +107,18 @@ void printMap(Map *map) {
     }
 }
 
-int canPlaceBoat(char **map, int mapSize, int x, int y, char orientation, short shipSize) {
-    int taille = 0;
-    if (orientation=='n') {
-        for (int i=x;i<mapSize || shipSize>0;i++) {
-
-            if (i<mapSize && shipSize>0) {
-                shipSize--;
-                taille++;
-            }else if (shipSize==0) {
-                return 1;
-            }else {
-                return 0;
-            }
-        }
-    }else if (orientation=='s') {
-        for (int i=x;i>0 || shipSize>0;i--) {
-            if (i>0&& shipSize>0) {
-                shipSize--;
-                taille++;
-
-            }else if (shipSize==0) {
-                return 1;
-            }else {
-                return 0;
-            }
-        }
-
-    }else if (orientation=='o') {
-        for (int i=y;i<mapSize || shipSize>0;i++) {
-            if (i<mapSize&& shipSize>0 ) {
-                shipSize--;
-                taille++;
-            }else if (shipSize==0) {
-                return 1;
-            }else {
-                return 0;
-            }
-        }
-
-    }else if (orientation=='e') {
-        for (int i=y;i>0 || shipSize!=0;i--) {
-            if (i>0 && shipSize!=0) {
-                shipSize--;
-                taille++;
-            }else if (shipSize==0) {
-                return 1;
-            }else {
-                return 0;
-            }
-        }
-    }else {
-        return 0;
-    }
-    return 1;
-}
-
 int main(void) {
+    Map *map = createMap(10);
+    Ship *ship = malloc(sizeof(Ship));
+    ship->x = 10;
+    ship->y = 5;
+    ship->orientation = 's';
+    ship->size = 5;
 
-    char mapeSize = 10;
+    addShip(map, ship);
 
-    char map[10][10]={0};
-    int b;
-    b = canPlaceBoat(map, mapeSize, 2, 2, 'o', 2);
-    printf("%d\n",b);
+    printMap(map);
+
     return 0;
 }
+
