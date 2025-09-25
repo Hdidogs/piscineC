@@ -7,6 +7,7 @@ typedef struct {
     unsigned short size;
 } Ship;
 
+
 int main(void) {
     printf("Hello, World!\n");
     return 0;
