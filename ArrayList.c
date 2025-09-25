@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 typedef struct {
     unsigned int x;
     unsigned int y;
@@ -14,11 +12,10 @@ typedef struct {
     unsigned int size;
 } Map;
 
-int main(void) {
-    const short AIRCRAFTCARRIERSIZE = 5;
-    const short CRUISERSIZE = 4;
-    const short DESTROYERSIZE = 3;
-    const short TORPEDOSIZE = 2;
+typedef struct {
+    Map *structs;
+} ArrayList;
 
-    return 0;
+int main(void) {
 }
+
