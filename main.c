@@ -189,12 +189,41 @@ int addShip(Map *map, Ship *ship) {
         map->shipAllocation++;
     }
 
-    for (int k = 0; k < ship->size; k++) {
-        int x = ship->x + ship->orientation == 'n' ? -k : ship->orientation == 's' ? k : 0;
-        int y = ship->y + ship->orientation == 'e' ? -k : ship->orientation == 'o' ? k : 0;
-        if (map->map[x][y] == 0) {
-            map->map[x][y] = 1;
+    int taille = ship->size;
+    if (ship->orientation=='n') {
+
+        for (int i=ship->x;taille!=0;i++) {
+
+            if (map->map[i][ship->y] == 0) {
+                map->map[i][ship->y] = 1;
+                taille--;
+            }
         }
+    }else if (ship->orientation=='s') {
+        for (int i=ship->x;taille!=0;i--) {
+            if (map->map[i][ship->y] == 0) {
+                map->map[i][ship->y] = 1;
+                taille--;
+            }
+        }
+
+    }else if (ship->orientation=='o') {
+        for (int i=ship->y;taille!=0 ;i++) {
+            if (map->map[ship->x][i] == 0) {
+                map->map[ship->x][i] = 1;
+                taille--;
+            }
+        }
+
+    }else if (ship->orientation=='e') {
+        for (int i=ship->y;taille!=0;i--) {
+            if (map->map[ship->x][i] == 0) {
+                map->map[ship->x][i] = 1;
+                taille--;
+            }
+        }
+    }else {
+        return 0;
     }
 }
 
