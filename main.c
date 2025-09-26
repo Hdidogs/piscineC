@@ -224,7 +224,13 @@ void printMap(Map *map) {
                 printf("%c ", c);
                 c++;
             } else if (i != 0 && j != 0) {
-                printf("%d ", map->map[i - 1][j - 1]);
+                if (map->map[i-1][j-1] == 0 || map->map[i-1][j-1] == 1) {
+                    printf("%c ", '*');
+                } else if (map->map[i-1][j-1] == -2) {
+                    printf("%c ", 'O');
+                } else if (map->map[i-1][j-1] == -1) {
+                    printf("%c ", 'x');
+                }
             } else if (i != 0 && j == 0) {
                 printf("%d ", n);
                 n++;
@@ -292,6 +298,17 @@ int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
     return 1;
 }
 
+int verifVictoire(Map *map) {
+    for (int i = 0; i < map->size; i++) {
+        for (int j = 0; j < map->size; j++) {
+            if (map->map[i][j] == 1) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int canAttack(Map *map, int x, int y) {
     if (map->map[x][y] == 0) {
         setMapValue(x,y,map,-1);
@@ -304,22 +321,11 @@ int canAttack(Map *map, int x, int y) {
     }else if (map->map[x][y] == -1) {
         return 0;
     }
-    if (victoir(map){
-    printf("Victoir\n")
+    if (verifVictoire(map)){
+    printf("Victoire\n");
     }else{
     return 0;
     }
-}
-
-int verifVictoire(Map *map) {
-    for (int i = 0; i < map->size; i++) {
-        for (int j = 0; j < map->size; j++) {
-            if (map->map[i][j] == 1) {
-                return 0;
-            }
-        }
-    }
-    return 1;
 }
 
 void setCoord(int l, char c, int *x, int *y) {
