@@ -281,6 +281,17 @@ int canAttackCross(Map *map, int x, int y) {
 
 }
 
+int verifVictoire(Map *map) {
+    for (int i = 0; i < map->size; i++) {
+        for (int j = 0; j < map->size; j++) {
+            if (map->map[i][j] == 1) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int main(void) {
 
 
