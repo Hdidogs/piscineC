@@ -225,9 +225,9 @@ void printMap(Map *map) {
                 c++;
             } else if (i != 0 && j != 0) {
                 if (map->map[i-1][j-1] == 0 || map->map[i-1][j-1] == 1) {
-                    printf("%c ", '*');
+                    printf("%c ", '.');
                 } else if (map->map[i-1][j-1] == -2) {
-                    printf("%c ", 'O');
+                    printf("%c ", '*');
                 } else if (map->map[i-1][j-1] == -1) {
                     printf("%c ", 'x');
                 }
@@ -361,9 +361,10 @@ int main(void) {
     scanf("%d", &choix);
 
     if (choix == 1) {
-        Map *map = createMap(10);
+        Map *map = createMap(config->grid_width);
         Ship *ship= malloc(sizeof(Ship));
 
+        printMap(map);
         for (int i = 0; i < 5; i++) {
             ship->size= config->ship_sizes[i];
             char *name;
