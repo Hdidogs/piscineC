@@ -157,6 +157,7 @@ Map *createMap(unsigned int size) {
 
 int addShip(Map *map, Ship *ship) {
     if (map->shipAllocation == 0) {
+
         Ship *newShip = (Ship *)malloc(sizeof(Ship));
         newShip->x = ship->x;
         newShip->y = ship->y;
@@ -180,13 +181,41 @@ int addShip(Map *map, Ship *ship) {
         map->ship = temp;
         map->shipAllocation++;
     }
+    int taille =ship->size;
+    if (ship->orientation=='n') {
 
-    for (int k = 0; k < ship->size; k++) {
-        int x = ship->x + ship->orientation == 'n' ? -k : ship->orientation == 's' ? k : 0;
-        int y = ship->y + ship->orientation == 'e' ? -k : ship->orientation == 'o' ? k : 0;
-        if (map->map[x][y] == 0) {
-            map->map[x][y] = 1;
+        for (int i=ship->x;taille!=0;i++) {
+
+            if (map->map[i][ship->y] == 0) {
+                map->map[i][ship->y] = 1;
+                taille--;
+            }
         }
+    }else if (ship->orientation=='s') {
+        for (int i=ship->x;taille!=0;i--) {
+            if (map->map[i][ship->y] == 0) {
+                map->map[i][ship->y] = 1;
+                taille--;
+            }
+        }
+
+    }else if (ship->orientation=='o') {
+        for (int i=ship->y;taille!=0 ;i++) {
+            if (map->map[ship->x][i] == 0) {
+                map->map[ship->x][i] = 1;
+                taille--;
+            }
+        }
+
+    }else if (ship->orientation=='e') {
+        for (int i=ship->y;taille!=0;i--) {
+            if (map->map[ship->x][i] == 0) {
+                map->map[ship->x][i] = 1;
+                taille--;
+            }
+        }
+    }else {
+        return 0;
     }
 }
 
@@ -228,12 +257,13 @@ void printMap(Map *map) {
     }
 }
 
-int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
+int canPlaceBoat(Map *map, Ship *ship, int shipSize) {
     int taille = 0;
-    if (orientation=='n') {
-        for (int i=x;i<map->size || shipSize>0;i++) {
 
-            if (i<map->size && shipSize>0&& map->map[x][i] == 0) {
+    if (ship->orientation=='n') {
+        for (int i=ship->x;i<map->size || shipSize>0;i++) {
+
+            if (i<map->size && shipSize>0&& map->map[ship->x][i] == 0) {
                 shipSize--;
                 taille++;
             }else if (shipSize==0) {
@@ -242,9 +272,9 @@ int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
                 return 0;
             }
         }
-    }else if (orientation=='s') {
-        for (int i=x;i>0 || shipSize>0;i--) {
-            if (i>0&& shipSize>0&& map->map[x][i] == 0) {
+    }else if (ship->orientation=='s') {
+        for (int i=ship->x;i>0 || shipSize>0;i--) {
+            if (i>0&& shipSize>0&& map->map[ship->x][i] == 0) {
                 shipSize--;
                 taille++;
 
@@ -255,9 +285,9 @@ int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
             }
         }
 
-    }else if (orientation=='o') {
-        for (int i=y;i<map->size || shipSize>0;i++) {
-            if (i<map->size&& shipSize>0 && map->map[x][i] == 0) {
+    }else if (ship->orientation=='o') {
+        for (int i=ship->y;i<map->size || shipSize>0;i++) {
+            if (i<map->size&& shipSize>0 && map->map[ship->x][i] == 0) {
                 shipSize--;
                 taille++;
             }else if (shipSize==0) {
@@ -267,9 +297,9 @@ int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
             }
         }
 
-    }else if (orientation=='e') {
-        for (int i=y;i>0 || shipSize!=0;i--) {
-            if (i>0 && shipSize!=0&& map->map[x][i] == 0) {
+    }else if (ship->orientation=='e') {
+        for (int i=ship->y;i>0 || shipSize!=0;i--) {
+            if (i>0 && shipSize!=0&& map->map[ship->x][i] == 0) {
                 shipSize--;
                 taille++;
             }else if (shipSize==0) {
@@ -305,10 +335,11 @@ void setCoord(int l, char c, int *x, int *y) {
 
 int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
 
-    if (canPlaceBoat(map,x,y,ship->orientation,ship->size)) {
-        ship->orientation = orientation;
-        ship->x = x;
-        ship->y = y;
+    if (canPlaceBoat(map,ship,ship->size)) {
+
+        ship->orientation = ship->orientation;
+        ship->x = ship->x;
+        ship->y = ship->y;
         addShip(map,ship);
         return 1;
     }
@@ -419,5 +450,71 @@ int main(void) {
     char *filename= "config.txt";
 
     load_config(filename,config);
+
+
+    printf("=== Bienvenue dans le jeu de la Bataille Navale ===\n");
+    printf("1. Jouer en Solo\n");
+    printf("2. Jouer a 2 Joueurs\n");
+    printf("Votre choix : ");
+    int choix;
+    scanf("%d", &choix);
+
+    if (choix == 1) {
+        Map *map = createMap(10);
+        Ship *ship= malloc(sizeof(Ship));
+
+        for (int i = 0; i < 5; i++) {
+            ship->size= config->ship_sizes[i];
+            char *name;
+            if (ship->size==5) {
+                name="carrier";
+            }else if (ship->size==4) {
+                name="Battleship";
+            }else if (ship->size==3) {
+                name="destroyer";
+            }else if (ship->size==2) {
+                name="Submarine";
+            }
+            int l;
+            printf("Entree les Coordonee du bateau %s de longueur %d\n",name,ship->size);
+            printf("x :");
+            scanf("%d",&l);
+            char c;
+            printf("y :");
+            scanf(" %c",&c);
+            char orientation;
+            printf("Orientation :");
+            scanf(" %c",&orientation);
+            int *x=malloc(sizeof(int));
+            int *y=malloc(sizeof(int));
+            setCoord(l,c,x,y);
+            ship->x=*x;
+            ship->y=*y;
+            ship->orientation = orientation;
+
+            if (tryPlaceBoat(map,*x,*y,ship->orientation,ship)) {
+               printMap(map);
+            }else {
+                printf("%d",tryPlaceBoat(map,*x,*y,orientation,ship));
+                i--;
+            }
+        }
+
+
+
+        printf("\nVos bateaux sont placés ! (le mode solo IA reste à coder)\n");
+
+    } else if (choix == 2) {
+
+
+        printf("\nLes deux joueurs ont placé leurs bateaux !\n");
+
+
+    } else {
+        printf("Choix invalide.\n");
+    }
+
+
     return 0;
+
 }
