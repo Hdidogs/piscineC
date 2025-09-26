@@ -20,7 +20,6 @@ typedef struct {
 
 typedef struct {
     Ship *ship;
-    Boats *boat;
     int **map;
     unsigned int size;
     unsigned int shipAllocation;
@@ -331,5 +330,67 @@ int main(void) {
     char *filename= "config.txt";
 
     load_config(filename,config);
+
+    printf("=== Bienvenue dans le jeu de la Bataille Navale ===\n");
+    printf("1. Jouer en Solo\n");
+    printf("2. Jouer a 2 Joueurs\n");
+    printf("Votre choix : ");
+    int choix;
+    scanf("%d", &choix);
+
+    if (choix == 1) {
+        Map *map = createMap(10);
+        Ship *ship= malloc(sizeof(Ship));
+
+        for (int i = 0; i < 5; i++) {
+            ship->size= config->ship_sizes[i];
+            char *name;
+            if (ship->size==5) {
+                name="carrier";
+            }else if (ship->size==4) {
+                name="Battleship";
+            }else if (ship->size==3) {
+                name="destroyer";
+            }else if (ship->size==2) {
+                name="Submarine";
+            }
+            int l;
+            printf("Entree les Coordonee du bateau %s de longueur %d\n",name,ship->size);
+            printf("x :");
+            scanf("%d",&l);
+            char c;
+            printf("y :");
+            scanf(" %c",&c);
+            char orientation;
+            printf("Orientation :");
+            scanf(" %c",&orientation);
+            int *x=malloc(sizeof(int));
+            int *y=malloc(sizeof(int));
+            setCoord(l,c,x,y);
+            ship->x=*x;
+            ship->y=*y;
+            ship->orientation = orientation;
+
+            if (tryPlaceBoat(map,*x,*y,ship->orientation,ship)) {
+               printMap(map);
+            }else {
+                printf("%d",tryPlaceBoat(map,*x,*y,orientation,ship));
+                i--;
+            }
+        }
+
+
+
+        printf("\nVos bateaux sont placés ! (le mode solo IA reste à coder)\n");
+
+    } else if (choix == 2) {
+
+
+        printf("\nLes deux joueurs ont placé leurs bateaux !\n");
+
+
+    } else {
+        printf("Choix invalide.\n");
+    }
     return 0;
 }
