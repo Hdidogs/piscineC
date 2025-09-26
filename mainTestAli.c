@@ -9,8 +9,109 @@ typedef struct {
     unsigned int y;
     unsigned short live;
     unsigned short size;
+    char orientation;
 } Ship;
 
+typedef struct {
+    Ship *ship;
+    int **map;
+    unsigned int size;
+    unsigned int shipAllocation;
+} Map;
+int addShip(Map *map, Ship *ship) {
+    if (map->shipAllocation == 0) {
+        Ship *newShip = (Ship *)malloc(sizeof(Ship));
+        newShip->x = ship->x;
+        newShip->y = ship->y;
+        newShip->orientation = ship->orientation;
+        newShip->size = ship->size;
+
+        map->shipAllocation++;
+        map->ship = newShip;
+    } else {
+        Ship *temp = malloc(sizeof(Ship) * (map->shipAllocation +1));
+        for (int i = 0; i < map->shipAllocation; i++) {
+            temp[i] = map->ship[i];
+        }
+
+        temp[map->shipAllocation].x = ship->x;
+        temp[map->shipAllocation].y = ship->y;
+        temp[map->shipAllocation].orientation = ship->orientation;
+        temp[map->shipAllocation].size = ship->size;
+
+        free(map->ship);
+        map->ship = temp;
+        map->shipAllocation++;
+    }
+
+    for (int k = 0; k < ship->size; k++) {
+        int x = ship->x + ship->orientation == 'n' ? -k : ship->orientation == 's' ? k : 0;
+        int y = ship->y + ship->orientation == 'e' ? -k : ship->orientation == 'o' ? k : 0;
+        if (map->map[x][y] == 0) {
+            map->map[x][y] = 1;
+        }
+    }
+}
+int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
+    int taille = 0;
+    if (orientation=='n') {
+        for (int i=x;i<map->size || shipSize>0;i++) {
+
+            if (i<map->size && shipSize>0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+    }else if (orientation=='s') {
+        for (int i=x;i>0 || shipSize>0;i--) {
+            if (i>0&& shipSize>0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+    }else if (orientation=='o') {
+        for (int i=y;i<map->size || shipSize>0;i++) {
+            if (i<map->size&& shipSize>0 && map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+    }else if (orientation=='e') {
+        for (int i=y;i>0 || shipSize!=0;i--) {
+            if (i>0 && shipSize!=0&& map->map[x][i] == 0) {
+                shipSize--;
+                taille++;
+            }else if (shipSize==0) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+    }else {
+        return 0;
+    }
+    return 1;
+}
+
+
+void generateRandomXY( int *x, int *y) {
+    int xTemp = 10;
+    int yTemp = 10;
 
 int generateRandomXY(){
     int x = 10;
@@ -48,8 +149,6 @@ return 0;
 int placeRandomBoat(char **maps,int mapsize) {
 
 }
-
-
 
 int main() {
     srand(time(NULL));
