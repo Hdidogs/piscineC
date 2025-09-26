@@ -10,6 +10,14 @@ typedef struct {
     char orientation;
 } Ship;
 
+
+typedef struct {
+    unsigned short b ;
+    unsigned short b1 ;
+    unsigned short b2 ;
+    unsigned short b3 ;
+}Boat;
+
 typedef struct {
     Ship *ship;
     int **map;
