@@ -12,14 +12,15 @@ typedef struct {
 
 
 typedef struct {
-    unsigned short b ;
-    unsigned short b1 ;
-    unsigned short b2 ;
-    unsigned short b3 ;
-}Boat;
+    unsigned short aircraft;
+    unsigned short cruiser;
+    unsigned short destroyers;
+    unsigned short torpilla;
+} Boats;
 
 typedef struct {
     Ship *ship;
+    Boats *boat;
     int **map;
     unsigned int size;
     unsigned int shipAllocation;
@@ -148,6 +149,12 @@ GameConfig *load_config(const char *filename, GameConfig *config) {
 
 Map *createMap(unsigned int size) {
     Map *map = (Map *)malloc(sizeof(Map));
+    map->boat = (Boats *)malloc(sizeof(Boats));
+    map->boat->aircraft = 1;
+    map->boat->cruiser = 1;
+    map->boat->destroyers = 2;
+    map->boat->torpilla = 1;
+
     map->size = size;
     map->shipAllocation = 0;
 
@@ -325,10 +332,14 @@ int tryPlaceBoat(Map *map, int x, int y,char orientation, Ship *ship ) {
 
 
 int main(void) {
-
     GameConfig *config = malloc(sizeof(GameConfig));
     char *filename= "config.txt";
 
     load_config(filename,config);
+
+    Map *map = createMap(config->grid_width);
+
+
+
     return 0;
 }

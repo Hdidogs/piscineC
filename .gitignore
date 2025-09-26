@@ -1,3 +1,4 @@
 CMakeLists.txt
 ArrayList.c
 mainTest.c
+mainTest.exe
