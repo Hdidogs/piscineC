@@ -295,15 +295,31 @@ int canPlaceBoat(Map *map, int x, int y, char orientation, short shipSize) {
 int canAttack(Map *map, int x, int y) {
     if (map->map[x][y] == 0) {
         setMapValue(x,y,map,-1);
-        return 1;
+
     }else if (map->map[x][y] == 1) {
         setMapValue(x,y,map,-2);
-        return 1;
+
     }else if (map->map[x][y] == -2) {
         return 0;
     }else if (map->map[x][y] == -1) {
         return 0;
     }
+    if (victoir(map){
+    printf("Victoir\n")
+    }else{
+    return 0;
+    }
+}
+
+int verifVictoire(Map *map) {
+    for (int i = 0; i < map->size; i++) {
+        for (int j = 0; j < map->size; j++) {
+            if (map->map[i][j] == 1) {
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
 
 void setCoord(int l, char c, int *x, int *y) {
@@ -381,10 +397,9 @@ int main(void) {
 
 
 
-        printf("\nVos bateaux sont placés ! (le mode solo IA reste à coder)\n");
+        printf("\nVos bateaux sont placés ! \n");
 
     } else if (choix == 2) {
-
 
         printf("\nLes deux joueurs ont placé leurs bateaux !\n");
 
